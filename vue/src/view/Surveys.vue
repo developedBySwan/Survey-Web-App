@@ -2,7 +2,7 @@
   <div>
     <header class="bg-white shadow">
       <div class="max-2-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Survey</h1>
       </div>
     </header>
     <main>
@@ -18,9 +18,7 @@
 </template>
 
 <script>
-export default {
-  name: "Dashborad",
-};
+export default {};
 </script>
 
 <style></style>
