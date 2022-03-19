@@ -1,24 +1,12 @@
 <template>
-  <div>
-    <header class="bg-white shadow">
-      <div class="max-2-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold text-gray-900">Survey</h1>
-      </div>
-    </header>
-    <main>
-      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div class="px-4 py-6 sm:px-0">
-          <div
-            class="border-4 border-dashed border-gray-200 rounded-lg h-96"
-          ></div>
-        </div>
-      </div>
-    </main>
-  </div>
+  <PageComponent title="Survey"> Content display here </PageComponent>
 </template>
 
-<script>
-export default {};
+<script setup>
+import PageComponent from "../components/PageComponent.vue";
+const props = defineProps({
+  title: String,
+});
 </script>
 
 <style></style>

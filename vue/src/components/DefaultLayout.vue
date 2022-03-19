@@ -7,7 +7,7 @@
           <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
             <!-- Mobile menu button-->
             <DisclosureButton
-              class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
             >
               <span class="sr-only">Open main menu</span>
               <MenuIcon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
@@ -31,18 +31,18 @@
             </div>
             <div class="hidden sm:block sm:ml-6">
               <div class="flex space-x-4">
-                <a
+                <router-link
                   v-for="item in navigation"
                   :key="item.name"
-                  :href="item.href"
+                  :to="item.to.name"
                   :class="[
-                    item.current
+                    this.$route.name === item.to.name
                       ? 'bg-gray-900 text-white'
                       : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                     'px-3 py-2 rounded-md text-sm font-medium',
                   ]"
                   :aria-current="item.current ? 'page' : undefined"
-                  >{{ item.name }}</a
+                  >{{ item.name }}</router-link
                 >
               </div>
             </div>
@@ -50,14 +50,6 @@
           <div
             class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
           >
-            <button
-              type="button"
-              class="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-            >
-              <span class="sr-only">View notifications</span>
-              <BellIcon class="h-6 w-6" aria-hidden="true" />
-            </button>
-
             <!-- Profile dropdown -->
             <Menu as="div" class="ml-3 relative">
               <div>
@@ -90,26 +82,7 @@
                         active ? 'bg-gray-100' : '',
                         'block px-4 py-2 text-sm text-gray-700',
                       ]"
-                      >Your Profile</a
-                    >
-                  </MenuItem>
-                  <MenuItem v-slot="{ active }">
-                    <a
-                      href="#"
-                      :class="[
-                        active ? 'bg-gray-100' : '',
-                        'block px-4 py-2 text-sm text-gray-700',
-                      ]"
-                      >Settings</a
-                    >
-                  </MenuItem>
-                  <MenuItem v-slot="{ active }">
-                    <a
-                      href="#"
-                      :class="[
-                        active ? 'bg-gray-100' : '',
-                        'block px-4 py-2 text-sm text-gray-700',
-                      ]"
+                      @click="logout"
                       >Sign out</a
                     >
                   </MenuItem>
@@ -120,22 +93,49 @@
         </div>
       </div>
 
-      <DisclosurePanel class="sm:hidden">
-        <div class="px-2 pt-2 pb-3 space-y-1">
-          <DisclosureButton
+      <DisclosurePanel class="md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <router-link
             v-for="item in navigation"
             :key="item.name"
-            as="a"
-            :href="item.href"
+            :to="item.to"
+            active-class="bg-gray-900 text-white"
             :class="[
-              item.current
-                ? 'bg-gray-900 text-white'
+              this.$route.name === item.to.name
+                ? ''
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white',
               'block px-3 py-2 rounded-md text-base font-medium',
             ]"
-            :aria-current="item.current ? 'page' : undefined"
-            >{{ item.name }}</DisclosureButton
-          >
+            >{{ item.name }}
+          </router-link>
+        </div>
+        <div class="pt-4 pb-3 border-t border-gray-700">
+          <div class="flex items-center px-5">
+            <div class="flex-shrink-0">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="white"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <div class="text-base font-medium leading-none text-white">
+                {{ user.name }}
+              </div>
+              <div class="text-sm font-medium leading-none text-gray-400">
+                {{ user.email }}
+              </div>
+            </div>
+          </div>
         </div>
       </DisclosurePanel>
     </Disclosure>
@@ -154,12 +154,13 @@ import {
   MenuItems,
 } from "@headlessui/vue";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/vue/outline";
+import { useStore } from "vuex";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
 
 const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
+  { name: "Dashboard", to: { name: "Dashboard" }, current: true },
+  { name: "Survery", to: { name: "Surveys" }, current: false },
 ];
 
 export default {
@@ -176,8 +177,20 @@ export default {
     XIcon,
   },
   setup() {
+    const store = useStore();
+    const router = useRouter();
+
+    function logout() {
+      store.commit("logout");
+      router.push({
+        name: "Login",
+      });
+    }
+
     return {
+      user: computed(() => store.state.user.data),
       navigation,
+      logout,
     };
   },
 };

@@ -80,6 +80,7 @@
           </span>
           Login in
         </button>
+        <router-link :to="{ name: 'Surveys' }">Dashboard</router-link>
       </div>
     </form>
   </div>
