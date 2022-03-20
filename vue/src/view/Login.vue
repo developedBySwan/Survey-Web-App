@@ -18,7 +18,7 @@
         Register Here
       </router-link>
     </p>
-    <form class="mt-8 space-y-6" action="#" method="POST">
+    <form class="mt-8 space-y-6" @submit="login">
       <input type="hidden" name="remember" value="true" />
       <div class="rounded-md shadow-sm -space-y-px">
         <div>
@@ -29,6 +29,7 @@
             type="email"
             autocomplete="email"
             required=""
+            v-model="user.email"
             class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
             placeholder="Email address"
           />
@@ -41,6 +42,7 @@
             type="password"
             autocomplete="current-password"
             required=""
+            v-model="user.password"
             class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
             placeholder="Password"
           />
@@ -53,6 +55,7 @@
             id="remember-me"
             name="remember-me"
             type="checkbox"
+            v-model="user.remember"
             class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
           />
           <label for="remember-me" class="ml-2 block text-sm text-gray-900">
@@ -80,19 +83,30 @@
           </span>
           Login in
         </button>
-        <router-link :to="{ name: 'Surveys' }">Dashboard</router-link>
       </div>
     </form>
   </div>
 </template>
 
-<script>
+<script setup>
 import { LockClosedIcon } from "@heroicons/vue/solid";
+import store from "../store";
+import { useRouter } from "vue-router";
 
-export default {
-  name: "Login",
-  components: {
-    LockClosedIcon,
-  },
+const router = useRouter();
+
+let user = {
+  email: "",
+  password: "",
+  remember: false,
 };
+
+function register(ev) {
+  ev.preventDefault();
+  store.dispatch("login", user).then((res) => {
+    router.push({
+      name: "Dashborad",
+    });
+  });
+}
 </script>
