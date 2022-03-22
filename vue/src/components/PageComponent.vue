@@ -1,8 +1,13 @@
 <template>
   <div>
     <header class="bg-white shadow">
-      <div class="max-2-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
+      <div
+        class="max-2-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8 flex justify-between"
+      >
+        <h1 v-if="title" class="text-3xl font-bold text-gray-900">
+          {{ title }}
+        </h1>
+        <slot name="header"></slot>
       </div>
     </header>
     <main>

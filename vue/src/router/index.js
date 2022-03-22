@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Dashboard from "../view/Dashboard.vue";
 import Login from "../view/Login.vue";
 import Register from "../view/Register.vue";
+import SurveyView from "../view/SurveyView.vue";
 import DefaultLayout from "../components/DefaultLayout.vue";
 import AuthLayout from "../components/AuthLayout.vue";
 import Survey from "../view/Surveys.vue";
@@ -17,6 +18,8 @@ const routes = [
     children: [
       { path: "/dashboard", name: "Dashboard", component: Dashboard },
       { path: "/surveys", name: "Surveys", component: Survey },
+      { path: "/survey/create", name: "SurveyCreate", component: SurveyView },
+      { path: "/survey/:id", name: "SurveyView", component: SurveyView },
     ],
   },
   {

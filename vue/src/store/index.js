@@ -1,12 +1,25 @@
 import { createStore } from "vuex";
 import axiosClient from "../axios.js";
 
+// const tmpSurveys = [
+//   {
+//     id: 100,
+//     title: "This is Title",
+//     status: "draft",
+//     img: "https://picsum.photos/200/300",
+//     description:
+//       "lorem epsona dsjfl;kakdj kl kjf klaj k <b> klajfkdl <b> klafj kj <i>Itac </i>kljak flj",
+//     created_at:
+//   },
+// ];
+
 const store = createStore({
   state: {
     user: {
       data: {},
       token: sessionStorage.getItem("TOKEN"),
     },
+    surveys: [],
   },
   getters: {},
   actions: {
@@ -26,7 +39,6 @@ const store = createStore({
         });
     },
     login({ commit }, user) {
-      // return user;
       return axiosClient.post("/login", user).then(({ data }) => {
         commit("setUser", data);
         return data;

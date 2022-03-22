@@ -1,5 +1,10 @@
 <template>
-  <PageComponent title="Dashboard"> Content Go Here </PageComponent>
+  <PageComponent>
+    <template v-slot:header>
+      <h1 class="text-3xl font-bold text-gray-900">Home</h1>
+    </template>
+    Content Go Here
+  </PageComponent>
 </template>
 
 <script setup>
