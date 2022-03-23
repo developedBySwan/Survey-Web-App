@@ -1,0 +1,236 @@
+<template>
+  <div>
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-bold">{{ index + 1 }}. {{ model.question }}</h3>
+    </div>
+    <!-- Question control -->
+    <div class="grid gap-3 grid-cols-12">
+      <!-- Question -->
+      <!-- Add New Question -->
+      <button
+        type="button"
+        @click="addQuestion()"
+        class="flex item-center text-xs py-1 px-3 mr-2 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
+        </svg>
+        Add
+      </button>
+      <!-- /End Question -->
+      <!-- Delete Question -->
+      <button
+        type="button"
+        @click="deleteQuestion()"
+        class="flex item-center text-xs py-1 px-3 mr-2 rounded-sm text-white bg-red-600 hover:border-red-600"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          ></path>
+        </svg>
+        Delete
+      </button>
+      <!-- Detete Question -->
+    </div>
+    <!-- /Question contorl -->
+
+    <!-- Question Index -->
+    <div class="grid gap-3 grid-cols-12">
+      <!-- Question -->
+      <div class="mt-3 col-span-3">
+        <!-- Question-Type -->
+        <label for="question_type">Select Question Type</label>
+        <select
+          name="question_type"
+          id="question_type"
+          v-model="model.type"
+          @change="typeChange"
+          class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 sm:text-sm"
+        >
+          <option v-for="type in questionTypes" :key="type" :value="type">
+            {{ upperCaseFirst(type) }}
+          </option>
+        </select>
+        <!-- /Question-Type -->
+      </div>
+    </div>
+
+    <!-- Question-Des -->
+    <div class="mt-3 col-span-9">
+      <label
+        for="'question_description_'+model.id"
+        class="block text-sm font-medium text-gray-700"
+        >Description</label
+      >
+      <textarea
+        :name="'question_description_' + model.id"
+        v-model="model.description"
+        :id="'question_description_' + model.id"
+        class="mt-1 focus:ring-indigo-500 foucs:border-indigo-500 block w-full shadow-sm sm:text-sm border-grey-300 rounded-md"
+      ></textarea>
+    </div>
+    <!-- /Question-Des -->
+
+    <!-- Data -->
+    <div>
+      <div v-if="ShouldHaveOptions()" class="mt-2">
+        <h4
+          class="text-sm font-semibold mb-1 flex justify-between items-center"
+        >
+          Option
+
+          <!-- Add New Option -->
+          <button
+            type="button"
+            @click="addOption()"
+            class="flex items-center text-xs py-1 px-2 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
+          >
+            Add Option
+          </button>
+          <!-- /Add New Option -->
+        </h4>
+        <div
+          v-if="!model.data.options.length"
+          class="text-xs text-gray-600 text-center py-3"
+        >
+          You Don't have any option to defined
+        </div>
+        <!-- option list -->
+        <div
+          v-for="(option, index) in model.data.options"
+          :key="option.uuid"
+          class="flex items-center mb-1"
+        >
+          <span class="w-6 text-sm">{{ index + 1 }}</span>
+          <input
+            type="text"
+            v-model="option.text"
+            @change="dataChange"
+            class="w-full rounded-sm py-1 px-2 text-xs border border-gray-300 focus:border-indigo-500"
+          />
+          <!-- Delete Option  -->
+          <button
+            type="button"
+            @click="removeOption(option)"
+            class="h-6 w-6 rounded-full flex items-center justify-center border border-transparent transition-colors hover:border-red-100"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              ></path>
+            </svg>
+          </button>
+          <!-- /Delete Option  -->
+        </div>
+        <!-- /option list -->
+      </div>
+    </div>
+    <!-- /Data -->
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from "vue";
+import { v4 as uuidv4 } from "uuid";
+import store from "../../store";
+
+const props = defineProps({
+  question: Object,
+  index: Number,
+});
+
+const emit = defineEmits(["change", "addQuestion", "deleteQuestion"]);
+
+const model = ref(JSON.parse(JSON.stringify(props.question)));
+
+// Get Qus type from VUEx
+const questionType = computed(() => store.state.questionTypes);
+
+function uppserCaseFirst(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// Check if the question should have options
+function ShouldHaveOptions() {
+  return ["select", "radio", "checkbox"].includes(model.value.type);
+}
+
+function getOptions() {
+  return model.value.data.options;
+}
+
+function setOptions() {
+  model.value.data.options = options;
+}
+
+function addOption() {
+  setOptions([
+    ...getOptions(),
+    {
+      uuid: uuidv4(),
+      text: "",
+    },
+  ]);
+}
+
+// remove option
+function removeOption() {
+  setOptions(getOptions().filter((opt) => opt !== op));
+  dataChange();
+}
+
+// type change
+function typeChange() {
+  if (shouldHaveOptions()) {
+    setOptions(getOptions() || []);
+  }
+}
+
+function dataChange() {
+  const data = model.value;
+  if (!shouldHaveOptions()) {
+    delete data.data.options;
+  }
+  emit("change", props.index + 1);
+}
+
+function addQuestion() {
+  emit("addQuestion" + props.index + 1);
+}
+
+function removeQuestion() {
+  emit("removeQuestion" + props.index);
+}
+</script>
+
+<style></style>

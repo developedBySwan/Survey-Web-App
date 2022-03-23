@@ -3,7 +3,7 @@
     <template v-slot:header>
       <router-link
         :to="{ name: 'SurveyCreate' }"
-        class="py-2 px-2 text-white bg-emerald-500 rounded-md hover:bg-emerald-600 flex"
+        class="py-2 px-5 text-white bg-emerald-500 rounded-md hover:bg-emerald-600 flex"
       >
         <svg
           class="w-6 h-6"

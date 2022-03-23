@@ -7,7 +7,9 @@
         </h1>
       </div>
     </template>
+    <pre>
     {{ model }}
+    </pre>
     <form @submit.prevent="saveSurvey">
       <div class="shadow sm:rounded-md sm:overflow-hidden">
         <!-- Survey Fields -->
@@ -182,6 +184,8 @@
 
 <script setup>
 import PageComponent from "../components/PageComponent.vue";
+import QuestionEditor from "../components/editor/QuestionEditor.vue";
+
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 import store from "../store";
@@ -203,6 +207,33 @@ if (route.params.id) {
   model.value = store.state.surveys.find(
     (s) => s.id == parseInt(route.params.id)
   );
+}
+
+function addQuestion(index) {
+  const newQuestion = {
+    id: uuidv4(),
+    type: "text",
+    question: "",
+    description: null,
+    data: {},
+  };
+
+  model.value.questions.splice(index, 0, newQuestion);
+}
+
+function deleteQuestion() {
+  model.value.questions = model.value.questions.filter(
+    (q) => q.id !== question
+  );
+}
+
+function questionChange() {
+  model.value.questions = model.value.questions.map((a) => {
+    if (q.id === question.id) {
+      return JSON.parse(JSON.stringify(question));
+    }
+    return q;
+  });
 }
 </script>
 
