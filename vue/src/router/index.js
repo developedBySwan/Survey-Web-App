@@ -12,14 +12,13 @@ const routes = [
   {
     path: "/",
     redirect: "/dashboard",
-    name: "Dashboard",
     component: DefaultLayout,
     meta: { requiresAuth: true },
     children: [
       { path: "/dashboard", name: "Dashboard", component: Dashboard },
       { path: "/surveys", name: "Surveys", component: Survey },
-      { path: "/survey/create", name: "SurveyCreate", component: SurveyView },
-      { path: "/survey/:id", name: "SurveyView", component: SurveyView },
+      { path: "/surveys/create", name: "SurveyCreate", component: SurveyView },
+      { path: "/surveys/:id", name: "SurveyView", component: SurveyView },
     ],
   },
   {

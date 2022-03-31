@@ -2,78 +2,98 @@
   <div>
     <div class="flex items-center justify-between">
       <h3 class="text-lg font-bold">{{ index + 1 }}. {{ model.question }}</h3>
-    </div>
-    <!-- Question control -->
-    <div class="grid gap-3 grid-cols-12">
-      <!-- Question -->
-      <!-- Add New Question -->
-      <button
-        type="button"
-        @click="addQuestion()"
-        class="flex item-center text-xs py-1 px-3 mr-2 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
-      >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+      <!-- Question control -->
+      <div class="flex items-center">
+        <!-- Question -->
+        <!-- Add New Question -->
+        <button
+          type="button"
+          @click="addQuestion()"
+          class="flex items-center text-xs py-1 px-2 rounded-lg mr-5 text-white bg-gray-600 hover:bg-gray-700"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-          ></path>
-        </svg>
-        Add
-      </button>
-      <!-- /End Question -->
-      <!-- Delete Question -->
-      <button
-        type="button"
-        @click="deleteQuestion()"
-        class="flex item-center text-xs py-1 px-3 mr-2 rounded-sm text-white bg-red-600 hover:border-red-600"
-      >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          Add
+        </button>
+        <!-- /End Question -->
+        <!-- Delete Question -->
+        <button
+          type="button"
+          @click="deleteQuestion()"
+          class="flex items-center text-xs py-1 px-2 rounded-lg text-white bg-red-600 hover:border-red-600"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-          ></path>
-        </svg>
-        Delete
-      </button>
-      <!-- Detete Question -->
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            ></path>
+          </svg>
+          Delete
+        </button>
+        <!-- Detete Question -->
+      </div>
+      <!-- /Question contorl -->
     </div>
-    <!-- /Question contorl -->
 
-    <!-- Question Index -->
     <div class="grid gap-3 grid-cols-12">
       <!-- Question -->
+      <div class="mt-3 col-span-9">
+        <label
+          :for="'question_text_' + model.data"
+          class="block text-sm font-medium text-gray-700"
+          >Question Text</label
+        >
+        <input
+          type="text"
+          :name="'question_text_' + model.data"
+          v-model="model.question"
+          @change="dataChange"
+          :id="'question_text_' + model.data"
+          class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+        />
+      </div>
+      <!--/ Question -->
+
+      <!-- Question Type -->
       <div class="mt-3 col-span-3">
-        <!-- Question-Type -->
-        <label for="question_type">Select Question Type</label>
+        <label
+          for="question_type"
+          class="block text-sm font-medium text-gray-700"
+          >Select Question Type</label
+        >
         <select
-          name="question_type"
           id="question_type"
+          name="question_type"
           v-model="model.type"
           @change="typeChange"
-          class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 sm:text-sm"
+          class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         >
-          <option v-for="type in questionTypes" :key="type" :value="type">
+          <option v-for="type in questionType" :key="type" :value="type">
             {{ upperCaseFirst(type) }}
           </option>
         </select>
-        <!-- /Question-Type -->
       </div>
+      <!--/ Question Type -->
     </div>
 
     <!-- Question-Des -->
@@ -176,7 +196,7 @@ const model = ref(JSON.parse(JSON.stringify(props.question)));
 // Get Qus type from VUEx
 const questionType = computed(() => store.state.questionTypes);
 
-function uppserCaseFirst(str) {
+function upperCaseFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -189,7 +209,7 @@ function getOptions() {
   return model.value.data.options;
 }
 
-function setOptions() {
+function setOptions(options) {
   model.value.data.options = options;
 }
 
@@ -201,6 +221,7 @@ function addOption() {
       text: "",
     },
   ]);
+  dataChange();
 }
 
 // remove option
@@ -214,6 +235,7 @@ function typeChange() {
   if (shouldHaveOptions()) {
     setOptions(getOptions() || []);
   }
+  dataChange();
 }
 
 function dataChange() {
@@ -228,8 +250,8 @@ function addQuestion() {
   emit("addQuestion" + props.index + 1);
 }
 
-function removeQuestion() {
-  emit("removeQuestion" + props.index);
+function deleteQuestion() {
+  emit("deleteQuestion" + props.question);
 }
 </script>
 

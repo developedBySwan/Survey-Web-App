@@ -34,7 +34,7 @@
                 <router-link
                   v-for="item in navigation"
                   :key="item.name"
-                  :to="item.to.name"
+                  :to="{ name: item.to.name }"
                   :class="[
                     this.$route.name === item.to.name
                       ? 'bg-gray-900 text-white'

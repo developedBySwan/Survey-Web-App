@@ -7,9 +7,6 @@
         </h1>
       </div>
     </template>
-    <pre>
-    {{ model }}
-    </pre>
     <form @submit.prevent="saveSurvey">
       <div class="shadow sm:rounded-md sm:overflow-hidden">
         <!-- Survey Fields -->
@@ -21,8 +18,8 @@
             </label>
             <div class="mt-1 flex items-center">
               <img
-                v-if="model.image"
-                :src="model.image"
+                v-if="model.img"
+                :src="model.img"
                 :alt="model.title"
                 class="w-64 h-48 object-cover"
               />
@@ -189,6 +186,7 @@ import QuestionEditor from "../components/editor/QuestionEditor.vue";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 import store from "../store";
+import { v4 as uuidv4 } from "uuid";
 
 const route = useRoute();
 // Create Empty Survey
@@ -221,10 +219,8 @@ function addQuestion(index) {
   model.value.questions.splice(index, 0, newQuestion);
 }
 
-function deleteQuestion() {
-  model.value.questions = model.value.questions.filter(
-    (q) => q.id !== question
-  );
+function deleteQuestion(question) {
+  model.value.questions = model.value.questions.filter((q) => q !== question);
 }
 
 function questionChange() {
@@ -233,6 +229,15 @@ function questionChange() {
       return JSON.parse(JSON.stringify(question));
     }
     return q;
+  });
+}
+
+function saveSurvey() {
+  store.dispatch("saveSurvey", model.value).then(({ data }) => {
+    router.push({
+      name: "SurveyView",
+      params: { id: data.data.id },
+    });
   });
 }
 </script>
