@@ -389,7 +389,6 @@ const store = createStore({
       } else {
         response = axiosClient.post("/survey", survey).then((res) => {
           commit("saveSurvey", res.data);
-          console.log(saveSurvey);
           return res;
         });
       }

@@ -48,6 +48,7 @@
               >
                 <input
                   type="file"
+                  @change="onImageChoose"
                   class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer"
                 />
                 Change
@@ -184,11 +185,14 @@ import PageComponent from "../components/PageComponent.vue";
 import QuestionEditor from "../components/editor/QuestionEditor.vue";
 
 import { ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import store from "../store";
 import { v4 as uuidv4 } from "uuid";
 
 const route = useRoute();
+
+const router = useRouter();
+
 // Create Empty Survey
 let model = ref({
   title: "",
@@ -223,7 +227,7 @@ function deleteQuestion(question) {
   model.value.questions = model.value.questions.filter((q) => q !== question);
 }
 
-function questionChange() {
+function questionChange(question) {
   model.value.questions = model.value.questions.map((a) => {
     if (q.id === question.id) {
       return JSON.parse(JSON.stringify(question));
@@ -233,7 +237,8 @@ function questionChange() {
 }
 
 function saveSurvey() {
-  store.dispatch("saveSurvey", model.value).then(({ data }) => {
+  store.dispatch("saveSurvey", model.value).then((data) => {
+    // console.log(data.data.id);
     router.push({
       name: "SurveyView",
       params: { id: data.data.id },

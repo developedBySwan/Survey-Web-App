@@ -13,8 +13,7 @@ class Survey extends Model
 
     protected $fillable = ['user_id','title','slug','status','description','expire_date'];
 
-    public function getSlugOptions(){
-        return SlugOptions::create()->generateSlugsFrom('title')->saveSlugTo('slug');
-
+    public function getSlugOptions() : SlugOptions {
+        return SlugOptions::create()->generateSlugsFrom('title')->saveSlugsTo('slug');
     }
 }
