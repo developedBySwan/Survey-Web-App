@@ -206,9 +206,7 @@ let model = ref({
 });
 
 if (route.params.id) {
-  model.value = store.state.surveys.find(
-    (s) => s.id == parseInt(route.params.id)
-  );
+  store.dispatch("getSurvey", route.params.id);
 }
 
 function onImageChoose(ev) {

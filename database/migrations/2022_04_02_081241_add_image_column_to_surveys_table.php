@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('surveys', function (Blueprint $table) {
-            $table->string(column: 'images');
+            $table->string(column: 'image')->nullable()->after('user_id');
         });
     }
 
