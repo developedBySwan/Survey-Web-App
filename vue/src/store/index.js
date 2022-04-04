@@ -392,7 +392,7 @@ const store = createStore({
         })
         .catch((err) => {
           commit("setCurrentSurveyLoading", false);
-          return res;
+          throw res;
         });
     },
     saveSurvey({ commit }, survey) {
@@ -407,6 +407,7 @@ const store = createStore({
           });
       } else {
         response = axiosClient.post("/survey", survey).then((res) => {
+          console.log(res.data);
           commit("saveSurvey", res.data);
           return res;
         });
@@ -448,6 +449,7 @@ const store = createStore({
       state.currentSurvey.data = survey.data;
     },
     saveSurvey(state, survey) {
+      console.log(survey.data);
       state.surveys = [...state.surveys, survey.data];
     },
     updateSurvey(state, survey) {

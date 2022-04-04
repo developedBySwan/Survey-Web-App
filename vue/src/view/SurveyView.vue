@@ -184,7 +184,7 @@
 import PageComponent from "../components/PageComponent.vue";
 import QuestionEditor from "../components/editor/QuestionEditor.vue";
 
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import store from "../store";
 import { v4 as uuidv4 } from "uuid";
@@ -204,6 +204,17 @@ let model = ref({
   expire_date: null,
   questions: [],
 });
+
+// watch change
+watch(
+  () => store.state.currentSurvey.data,
+  (newVal, oldVal) => {
+    model.value = {
+      ...JSON.parse(JSON.stringify(newVal)),
+      status: newVal.status !== "draft",
+    };
+  }
+);
 
 if (route.params.id) {
   store.dispatch("getSurvey", route.params.id);
@@ -246,7 +257,8 @@ function questionChange(question) {
 }
 
 function saveSurvey() {
-  store.dispatch("saveSurvey", model.value).then((data) => {
+  store.dispatch("saveSurvey", { ...model.value }).then(({ data }) => {
+    console.log(data);
     router.push({
       name: "SurveyView",
       params: { id: data.data.id },
